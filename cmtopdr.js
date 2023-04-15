@@ -1,9 +1,7 @@
 // ==UserScript==
-// @name         New Userscript
+// @name         cmtopdr
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @version      1.0
 // @run-at       document-start
 // @require      http://cdn.bootcss.com/jquery/1.8.3/jquery.min.js
 // @match        https://www.cmtopdr.com/static/web_page/dist/index.html*
