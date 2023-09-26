@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         cmtopdr
+// @name         xmly
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @run-at       document-start
+// @version      1.1
+// @run-at       document-idle
 // @require      http://cdn.bootcss.com/jquery/1.8.3/jquery.min.js
-// @match        https://www.ximalaya.com/sound/*
+// @match        https://www.ximalaya.com/*
 // @grant        GM_log
 // @grant        GM_addElement
 // @grant        GM_download
@@ -14,23 +14,28 @@
     'use strict';
     /* globals jQuery, $, waitForKeyElements */
     setStyle();
-    setTimeout(getSound, 3000);
+    setDownloadBtn();
 })();
 
-function getSound() {
+function setDownloadBtn() {
     $('body').append('<div class="pp_btn" id="pp_plugins">下载音频</div>');
     $("#pp_plugins").css("cursor","pointer").click(downloadSound);
 }
 
 function downloadSound() {
-    var pathId = parseInt(document.location.pathname.split("/").reverse()[0]);
-    $.get("/revision/play/v1/audio", {ptype: 1, id: pathId}, function(data,status){
-        var soundUrl = JSON.parse(data).data.src;
-        let suffixUrl = soundUrl.split(".").reverse()[0];
-        $.get("/revision/track/simple", {trackId: pathId}, function(title, status){
-            GM_download(soundUrl, JSON.parse(title).data.trackInfo.title+"."+suffixUrl, true);
+    if (document.location.pathname.split("/")[1] != 'sound') {
+        alert('未在音频页面，请点击音频');
+    } else {
+        var pathId = parseInt(document.location.pathname.split("/").reverse()[0]);
+        $.get("/revision/play/v1/audio", {ptype: 1, id: pathId}, function(data,status){
+            var soundUrl = JSON.parse(data).data.src;
+            let suffixUrl = soundUrl.split(".").reverse()[0];
+            $.get("/revision/track/simple", {trackId: pathId}, function(title, status){
+                GM_download(soundUrl, JSON.parse(title).data.trackInfo.title+"."+suffixUrl, true);
+                alert("正在下载："+JSON.parse(title).data.trackInfo.title);
+            });
         });
-    });
+    }
 }
 
 function setStyle() {
